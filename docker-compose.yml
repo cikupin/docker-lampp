@@ -1,0 +1,8 @@
+version: '2'
+services:
+  php-apache2:
+    image: php-apache2-5.6:1.0
+    container_name: php-apache2-5.6
+    command: /bin/bash -c "source /etc/apache2/envvars && apache2 -DFOREGROUND"
+    ports:
+      - 80:80
