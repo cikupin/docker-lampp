@@ -3,6 +3,10 @@ services:
   php-apache2:
     image: php-apache2-5.6:1.0
     container_name: php-apache2-5.6
+    volumes:
+      - ./etc/php5/apache2/php.ini:/etc/php5/apache2/php.ini
+      - ./etc/php5/cli/php.ini:/etc/php5/cli/php.ini
+      - /var/www/html:/var/www/html
     command: /bin/bash -c "source /etc/apache2/envvars && apache2 -DFOREGROUND"
     ports:
       - 80:80
