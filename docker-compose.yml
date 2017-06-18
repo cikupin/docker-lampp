@@ -10,3 +10,21 @@ services:
     command: /bin/bash -c "source /etc/apache2/envvars && apache2 -DFOREGROUND"
     ports:
       - 80:80
+    networks:
+      - net-lampp-5.6
+
+  mariadb-docker:
+    image: mariadb:10.3.0
+    container_name: mariadb-docker-10.3
+    environment:
+       - MYSQL_ROOT_PASSWORD=my-secret-pw
+    volumes:
+      - ~/Apps/mariadb_docker_data:/var/lib/mysql
+    ports:
+      - 3306:3306
+    networks:
+      - net-lampp-5.6
+
+networks:
+  net-lampp-5.6:
+    driver: "bridge"
