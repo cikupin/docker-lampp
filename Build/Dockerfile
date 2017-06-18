@@ -21,6 +21,7 @@ RUN apt-get -y install php5 libapache2-mod-php5 php5-dev php5-mysqlnd php5-curl 
 RUN pecl install mongo
 RUN pecl install mongodb
 RUN php5enmod mcrypt
+RUN a2enmod rewrite
 
 # Clean .deb files
 RUN apt-get clean

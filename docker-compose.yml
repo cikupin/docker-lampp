@@ -8,7 +8,7 @@ services:
       - ./etc/php5/apache2/php.ini:/etc/php5/apache2/php.ini
       - ./etc/php5/cli/php.ini:/etc/php5/cli/php.ini
       - /var/www/html:/var/www/html
-    command: /bin/bash -c "source /etc/apache2/envvars && a2enmod rewrite && apache2 -DFOREGROUND"
+    command: /bin/bash -c "source /etc/apache2/envvars && apache2 -DFOREGROUND"
     ports:
       - 80:80
     networks:
