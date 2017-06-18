@@ -26,6 +26,12 @@ services:
     networks:
       - net-lampp-5.6
 
+  redis-docker:
+    image: redis:3.0.7-alpine
+    ports: 6379:6379
+    networks:
+      - net-lampp-5.6
+
 networks:
   net-lampp-5.6:
     driver: "bridge"
