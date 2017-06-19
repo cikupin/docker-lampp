@@ -1,7 +1,7 @@
 version: '2'
 services:
   php-apache2:
-    image: php-apache2-5.6:1.0
+    image: cikupin/php-apache2:5.6
     container_name: php-apache2-5.6
     volumes:
       - ./etc/apache2/sites-available/000-default.conf:/etc/apache2/sites-available/000-default.conf
