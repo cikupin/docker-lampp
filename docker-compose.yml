@@ -38,8 +38,13 @@ services:
     image: rabbitmq:3.6.10-management-alpine
     container_name: rabbitmq-3.6.10
     ports:
+        - 4369:4369
+        - 5671:5671
         - 5672:5672
+        - 15671:15671
         - 15672:15672
+        - 25672:25672
+
     networks:
       - net-lampp-5.6
 
