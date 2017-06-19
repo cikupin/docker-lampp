@@ -43,6 +43,14 @@ services:
     networks:
       - net-lampp-5.6
 
+  beanstalkd-docker:
+    image: cikupin/beanstalkd:1.10-alpine
+    container_name: beanstalkd-1.10
+    ports:
+        - 11300:11300
+    networks:
+      - net-lampp-5.6
+
 networks:
   net-lampp-5.6:
     driver: "bridge"
