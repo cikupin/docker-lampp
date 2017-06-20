@@ -20,6 +20,12 @@ RUN apt-get -y install php5 libapache2-mod-php5 php5-dev php5-mysqlnd php5-curl 
     php5-ps php5-pspell php5-recode php5-snmp php5-sqlite php5-tidy php5-xmlrpc php5-xsl php5-pgsql
 RUN pecl install mongo
 RUN pecl install mongodb
+
+# Install phalcon framework
+RUN curl -s "https://packagecloud.io/install/repositories/phalcon/stable/script.deb.sh" | bash
+RUN apt-get install php5-phalcon
+
+# Enable php modules
 RUN php5enmod mcrypt
 RUN a2enmod rewrite
 
