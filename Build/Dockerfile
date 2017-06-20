@@ -30,7 +30,10 @@ RUN php5enmod mcrypt
 RUN a2enmod rewrite
 
 # Clean .deb files
+RUN apt-get autoclean
 RUN apt-get clean
+RUN apt-get autoremove
+RUN rm -rf /tmp/*
 
 EXPOSE 80
 WORKDIR "/var/www/html"
