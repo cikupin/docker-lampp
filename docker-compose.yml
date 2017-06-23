@@ -20,7 +20,7 @@ services:
     environment:
        - MYSQL_ROOT_PASSWORD=my-secret-pw
     volumes:
-      - ~/Apps/mariadb_docker_data:/var/lib/mysql
+      - ~/Apps/docker_data/mariadb:/var/lib/mysql
     ports:
       - 3306:3306
     networks:
@@ -53,6 +53,16 @@ services:
     container_name: beanstalkd-1.10
     ports:
       - 11300:11300
+    networks:
+      - net-lampp-5.6
+
+  mongodb-docker:
+    image: cikupin/mongodb-alpine:3.4.4
+    container_name: mongodb-3.4.4
+    volumes:
+      - ~/Apps/docker_data/mongodb:/data/db
+    ports:
+      - 27017:27017
     networks:
       - net-lampp-5.6
 
