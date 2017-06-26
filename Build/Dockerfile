@@ -29,6 +29,9 @@ RUN apt-get install php5-phalcon
 RUN php5enmod mcrypt
 RUN a2enmod rewrite
 
+# Install PhpMyAdmin
+RUN apt-get -y install phpmyadmin
+
 # Clean .deb files
 RUN apt-get autoclean
 RUN apt-get clean
