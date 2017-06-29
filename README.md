@@ -147,5 +147,5 @@ To know more about docker expose and docker network, see references below:
 1. Docker expose
   * https://docs.docker.com/compose/compose-file/compose-file-v2/#ports
   * https://docs.docker.com/engine/reference/run/#expose-incoming-ports
-1. Docker network
+2. Docker network
   * https://docs.docker.com/engine/userguide/networking
