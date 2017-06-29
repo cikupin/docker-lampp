@@ -10,7 +10,7 @@ services:
       - ./etc/php5/cli/php.ini:/etc/php5/cli/php.ini
       - ./etc/phpmyadmin/config-db.php:/etc/phpmyadmin/config-db.php
       - ./etc/phpmyadmin/config.inc.php:/etc/phpmyadmin/config.inc.php
-      - /var/www/html:/var/www/html
+      - /var/www/html:/var/www/html # htdocs mounting point
     command: /bin/bash -c "source /etc/apache2/envvars && apache2 -DFOREGROUND"
     ports:
       - 80:80
@@ -23,7 +23,7 @@ services:
     environment:
        - MYSQL_ROOT_PASSWORD=my-secret-pw
     volumes:
-      - ~/Apps/docker_data/mariadb:/var/lib/mysql
+      - ~/Apps/docker_data/mariadb:/var/lib/mysql # mysql data mounting point
     ports:
       - 3306:3306
     networks:
@@ -63,7 +63,7 @@ services:
     image: cikupin/mongodb-alpine:3.4.4
     container_name: mongodb-3.4.4
     volumes:
-      - ~/Apps/docker_data/mongodb:/data/db
+      - ~/Apps/docker_data/mongodb:/data/db #mongodb data mounting point
     ports:
       - 27017:27017
     networks:
