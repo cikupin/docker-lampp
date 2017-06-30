@@ -75,8 +75,8 @@ All services that are registered in docker compose file  will be running. To sto
 docker-compose down
 ```
 
-Mounting volumes
-----------------
+Mounting volume
+---------------
 
 Data in container will be deleted automatically when you remove container. In order to keep your data from container although you had deleted your container, you need to mount your folder in your container to your local machine. So, I mount directories for PHP project and database directories by using docker volumes.
 
