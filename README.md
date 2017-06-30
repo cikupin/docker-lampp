@@ -116,8 +116,6 @@ services:
       - ./etc/phpmyadmin/config.inc.php:/etc/phpmyadmin/config.inc.php
 ```
 
-**Format :** (path_in_local):(path_in_container)
-
 You can edit those file according to your desired configurations, or you may add another files to be configured and mount them to your container.
 
 Expose Port
