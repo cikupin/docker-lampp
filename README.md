@@ -56,7 +56,11 @@ docker build -t cikupin/php-apache2:5.6 .
 
 #### 2. Pull docker image from docker hub
 
-*Note : not yet uploaded to docker hub. Will be uploaded soon.*
+Pull image by simply using this command:
+
+```
+docker pull cikupin/php-apache2:5.6
+```
 
 Using Docker Compose
 --------------------
