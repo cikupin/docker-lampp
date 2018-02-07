@@ -22,6 +22,7 @@ services:
     container_name: mariadb-docker-10.3
     environment:
        - MYSQL_ROOT_PASSWORD=my-secret-pw
+       - MYSQL_ROOT_HOST=%
     volumes:
       - ~/Apps/docker_data/mariadb:/var/lib/mysql # mysql data mounting point
     ports:
