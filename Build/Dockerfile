@@ -49,6 +49,23 @@ RUN docker-php-ext-install -j$(nproc) recode
 RUN docker-php-ext-install -j$(nproc) snmp
 RUN docker-php-ext-install -j$(nproc) xmlrpc
 RUN docker-php-ext-install -j$(nproc) xsl
+RUN docker-php-ext-install -j$(nproc) bcmath
+RUN docker-php-ext-install -j$(nproc) bz2
+RUN docker-php-ext-install -j$(nproc) calendar
+RUN docker-php-ext-install -j$(nproc) dba
+RUN docker-php-ext-install -j$(nproc) exif
+RUN docker-php-ext-install -j$(nproc) gettext
+RUN docker-php-ext-install -j$(nproc) mysql
+RUN docker-php-ext-install -j$(nproc) mysqli
+RUN docker-php-ext-install -j$(nproc) pcntl
+RUN docker-php-ext-install -j$(nproc) pdo_mysql
+RUN docker-php-ext-install -j$(nproc) pdo_pgsql
+RUN docker-php-ext-install -j$(nproc) soap
+RUN docker-php-ext-install -j$(nproc) sockets
+RUN docker-php-ext-install -j$(nproc) sysvmsg
+RUN docker-php-ext-install -j$(nproc) sysvsem
+RUN docker-php-ext-install -j$(nproc) sysvshm
+RUN docker-php-ext-install -j$(nproc) wddx
 
 RUN docker-php-ext-configure imap --with-kerberos --with-imap-ssl
 RUN docker-php-ext-install -j$(nproc) imap
@@ -70,6 +87,9 @@ RUN docker-php-ext-enable mongo intl imagick rdkafka mongodb memcache ps apcu
 
 # Use the default production configuration
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
+
+# Enable apache2 modules
+RUN a2enmod rewrite
 
 # Clean files
 RUN apt-get autoclean
