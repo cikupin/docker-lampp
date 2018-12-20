@@ -43,8 +43,6 @@ RUN apt-get update && apt-get install -y \
         pslib1 pslib-dev \
         libmagickwand-dev --no-install-recommends
 
-# RUN docker-php-ext-install -j$(nproc) dev
-
 RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/
 RUN docker-php-ext-install -j$(nproc) gd
 RUN docker-php-ext-install -j$(nproc) tidy
@@ -60,8 +58,6 @@ RUN docker-php-ext-install -j$(nproc) imap
 RUN docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql
 RUN docker-php-ext-install -j$(nproc) pgsql
 
-# RUN docker-php-ext-install -j$(nproc) pear
-# RUN docker-php-ext-install -j$(nproc) memcache
 # RUN docker-php-ext-install -j$(nproc) ming
 # RUN docker-php-ext-install -j$(nproc) apcu
 # RUN docker-php-ext-install -j$(nproc) xls
@@ -78,14 +74,14 @@ RUN docker-php-ext-install -j$(nproc) pgsql
 # configure: error: not found. Please provide a path to MagickWand-config or Wand-config program.
 # ERROR: `/tmp/pear/temp/imagick/configure --with-php-config=/usr/local/bin/php-config --with-imagick` failed
 
-# SUCESS :
 RUN pecl install mongo
 RUN pecl install intl
 RUN pecl install imagick
 RUN pecl install rdkafka
 RUN pecl install mongodb
 RUN pecl install memcache
+RUN pecl install ps-1.3.7
 
-# RUN pecl install ps-1.4.0
-# configure: error: Please reinstall the pslib distribution
-# ERROR: `/tmp/pear/temp/ps/configure --with-php-config=/usr/local/bin/php-config --with-ps=` failed
+RUN docker-php-ext-enable mongo intl imagick rdkafka mongodb memcache ps
+
+RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
