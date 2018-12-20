@@ -1,4 +1,4 @@
-FROM ubuntu:14.04
+FROM php:5.6.39-apache-jessie
 LABEL maintainer="cikupin@gmail.com"
 
 ENV DEBIAN_FRONTEND=noninteractive
@@ -13,8 +13,6 @@ RUN apt-get install -y software-properties-common
 RUN sed -i "s/^exit 101$/exit 0/" /usr/sbin/policy-rc.d
 
 # Install latest git
-RUN add-apt-repository ppa:git-core/ppa
-RUN apt-get update
 RUN apt-get install -y git
 
 # Install librdkafka c library
@@ -27,29 +25,67 @@ RUN make install
 WORKDIR /
 RUN rm -rf /tmp/librdkafka
 
-# Install apache2
-RUN apt-get -y install apache2
+RUN apt-get update && apt-get install -y \
+        libfreetype6-dev \
+        libjpeg62-turbo-dev \
+        libpng12-dev \
+        libtidy-dev \
+        libpq-dev \
+        libc-client-dev \
+        libkrb5-dev \
+        libmcrypt-dev \
+        libreadline-dev \
+        libpspell-dev \
+        librecode-dev \
+        libxml2-dev \
+        libsnmp-dev \
+        libicu-dev \
+        pslib1 pslib-dev \
+        libmagickwand-dev --no-install-recommends
 
-# Install PHP
-RUN apt-get -y install php5 libapache2-mod-php5 php5-dev php5-mysqlnd php5-curl php5-gd \
-    php5-intl php-pear php5-imagick php5-imap php5-mcrypt php5-memcache php5-ming php5-apcu \
-    php5-ps php5-pspell php5-recode php5-snmp php5-sqlite php5-tidy php5-xmlrpc php5-xsl php5-pgsql
+# RUN docker-php-ext-install -j$(nproc) dev
+
+RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/
+RUN docker-php-ext-install -j$(nproc) gd
+RUN docker-php-ext-install -j$(nproc) tidy
+RUN docker-php-ext-install -j$(nproc) mcrypt
+RUN docker-php-ext-install -j$(nproc) pspell
+RUN docker-php-ext-install -j$(nproc) recode
+RUN docker-php-ext-install -j$(nproc) snmp
+RUN docker-php-ext-install -j$(nproc) xmlrpc
+
+RUN docker-php-ext-configure imap --with-kerberos --with-imap-ssl
+RUN docker-php-ext-install -j$(nproc) imap
+
+RUN docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql
+RUN docker-php-ext-install -j$(nproc) pgsql
+
+# RUN docker-php-ext-install -j$(nproc) pear
+# RUN docker-php-ext-install -j$(nproc) memcache
+# RUN docker-php-ext-install -j$(nproc) ming
+# RUN docker-php-ext-install -j$(nproc) apcu
+# RUN docker-php-ext-install -j$(nproc) xls
+
+# error: /usr/src/php/ext/pear does not exist
+# usage: /usr/local/bin/docker-php-ext-install [-jN] ext-name [ext-name ...]
+#    ie: /usr/local/bin/docker-php-ext-install gd mysqli
+#        /usr/local/bin/docker-php-ext-install pdo pdo_mysql
+#        /usr/local/bin/docker-php-ext-install -j5 gd mbstring mysqli pdo pdo_mysql shmop
+# if custom ./configure arguments are necessary, see docker-php-ext-configure
+# Possible values for ext-name:
+# bcmath bz2 calendar ctype curl dba dom enchant exif fileinfo filter ftp gd gettext gmp hash iconv imap interbase intl json ldap mbstring mcrypt mssql mysql mysqli oci8 odbc opcache pcntlpdo pdo_dblib pdo_firebird pdo_mysql pdo_oci pdo_odbc pdo_pgsql pdo_sqlite pgsql phar posix pspell readline recode reflection session shmop simplexml snmp soap sockets spl standard sybase_ct sysvmsg sysvsem sysvshm tidy tokenizer wddx xml xmlreader xmlrpc xmlwriter xsl zip
+
+# configure: error: not found. Please provide a path to MagickWand-config or Wand-config program.
+# ERROR: `/tmp/pear/temp/imagick/configure --with-php-config=/usr/local/bin/php-config --with-imagick` failed
+
+# SUCESS :
 RUN pecl install mongo
-RUN pecl install mongodb
+RUN pecl install intl
+RUN pecl install imagick
 RUN pecl install rdkafka
+RUN pecl install mongodb
+RUN pecl install memcache
 
-# Enable php modules
-RUN php5enmod mcrypt
-RUN a2enmod rewrite
-
-# Install PhpMyAdmin
-RUN apt-get -y install phpmyadmin
-
-# Clean .deb files
-RUN apt-get autoclean
-RUN apt-get clean
-RUN apt-get autoremove
-RUN rm -rf /tmp/*
-
-EXPOSE 80
-WORKDIR "/var/www/html"
+# RUN pecl install ps-1.4.0
+# configure: error: Please reinstall the pslib distribution
+# ERROR: `/tmp/pear/temp/ps/configure --with-php-config=/usr/local/bin/php-config --with-ps=` failed
