@@ -4,12 +4,7 @@ LABEL maintainer="cikupin@gmail.com"
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update
-RUN apt-get install -y apt-utils
-RUN apt-get install -y dialog libterm-readline-perl-perl htop nano
-RUN apt-get install -y autoconf gcc g++ make openssl libssl-dev \
-    libcurl4-openssl-dev pkg-config libsasl2-dev libpcre3-dev snmp
-RUN apt-get install -y software-properties-common
-
+RUN apt-get install -y snmp
 RUN sed -i "s/^exit 101$/exit 0/" /usr/sbin/policy-rc.d
 
 # Install latest git
@@ -75,3 +70,9 @@ RUN docker-php-ext-enable mongo intl imagick rdkafka mongodb memcache ps apcu
 
 # Use the default production configuration
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
+
+# Clean files
+RUN apt-get autoclean
+RUN apt-get clean
+RUN apt-get autoremove
+RUN rm -rf /tmp/*
