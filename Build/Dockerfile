@@ -41,8 +41,10 @@ RUN apt-get update && apt-get install -y \
         libsnmp-dev \
         libicu-dev \
         pslib1 pslib-dev \
+        libxslt-dev \
         libmagickwand-dev --no-install-recommends
 
+# Install PHP extension
 RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/
 RUN docker-php-ext-install -j$(nproc) gd
 RUN docker-php-ext-install -j$(nproc) tidy
@@ -51,28 +53,13 @@ RUN docker-php-ext-install -j$(nproc) pspell
 RUN docker-php-ext-install -j$(nproc) recode
 RUN docker-php-ext-install -j$(nproc) snmp
 RUN docker-php-ext-install -j$(nproc) xmlrpc
+RUN docker-php-ext-install -j$(nproc) xsl
 
 RUN docker-php-ext-configure imap --with-kerberos --with-imap-ssl
 RUN docker-php-ext-install -j$(nproc) imap
 
 RUN docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql
 RUN docker-php-ext-install -j$(nproc) pgsql
-
-# RUN docker-php-ext-install -j$(nproc) ming
-# RUN docker-php-ext-install -j$(nproc) apcu
-# RUN docker-php-ext-install -j$(nproc) xls
-
-# error: /usr/src/php/ext/pear does not exist
-# usage: /usr/local/bin/docker-php-ext-install [-jN] ext-name [ext-name ...]
-#    ie: /usr/local/bin/docker-php-ext-install gd mysqli
-#        /usr/local/bin/docker-php-ext-install pdo pdo_mysql
-#        /usr/local/bin/docker-php-ext-install -j5 gd mbstring mysqli pdo pdo_mysql shmop
-# if custom ./configure arguments are necessary, see docker-php-ext-configure
-# Possible values for ext-name:
-# bcmath bz2 calendar ctype curl dba dom enchant exif fileinfo filter ftp gd gettext gmp hash iconv imap interbase intl json ldap mbstring mcrypt mssql mysql mysqli oci8 odbc opcache pcntlpdo pdo_dblib pdo_firebird pdo_mysql pdo_oci pdo_odbc pdo_pgsql pdo_sqlite pgsql phar posix pspell readline recode reflection session shmop simplexml snmp soap sockets spl standard sybase_ct sysvmsg sysvsem sysvshm tidy tokenizer wddx xml xmlreader xmlrpc xmlwriter xsl zip
-
-# configure: error: not found. Please provide a path to MagickWand-config or Wand-config program.
-# ERROR: `/tmp/pear/temp/imagick/configure --with-php-config=/usr/local/bin/php-config --with-imagick` failed
 
 RUN pecl install mongo
 RUN pecl install intl
@@ -81,7 +68,10 @@ RUN pecl install rdkafka
 RUN pecl install mongodb
 RUN pecl install memcache
 RUN pecl install ps-1.3.7
+RUN pecl install apcu-4.0.11
 
-RUN docker-php-ext-enable mongo intl imagick rdkafka mongodb memcache ps
+# Enable PECL extensions
+RUN docker-php-ext-enable mongo intl imagick rdkafka mongodb memcache ps apcu
 
+# Use the default production configuration
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
