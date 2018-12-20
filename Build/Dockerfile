@@ -66,6 +66,7 @@ RUN docker-php-ext-install -j$(nproc) sysvmsg
 RUN docker-php-ext-install -j$(nproc) sysvsem
 RUN docker-php-ext-install -j$(nproc) sysvshm
 RUN docker-php-ext-install -j$(nproc) wddx
+RUN docker-php-ext-install -j$(nproc) shmop
 
 RUN docker-php-ext-configure imap --with-kerberos --with-imap-ssl
 RUN docker-php-ext-install -j$(nproc) imap
