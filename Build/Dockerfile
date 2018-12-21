@@ -4,11 +4,16 @@ LABEL maintainer="cikupin@gmail.com"
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update
-RUN apt-get install -y snmp
+RUN apt-get install -y snmp wget
 RUN sed -i "s/^exit 101$/exit 0/" /usr/sbin/policy-rc.d
 
 # Install latest git
 RUN apt-get install -y git
+
+# Install Datadog PHP APM tracer (beta 0.8.1)
+RUN wget -O datadog-php-tracer.deb https://github.com/DataDog/dd-trace-php/releases/download/0.8.1/datadog-php-tracer_0.8.1-beta_amd64.deb
+RUN dpkg -i datadog-php-tracer.deb
+RUN rm -f datadog-php-tracer.deb
 
 # Install librdkafka c library
 RUN mkdir -p /tmp/librdkafka
@@ -87,7 +92,7 @@ RUN pecl install apcu-4.0.11
 RUN docker-php-ext-enable mongo intl imagick rdkafka mongodb memcache ps apcu
 
 # Use the default production configuration
-RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
+RUN cp "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 
 # Enable apache2 modules
 RUN a2enmod rewrite
