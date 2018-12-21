@@ -6,9 +6,6 @@ services:
     volumes:
       - ./etc/apache2/sites-available/000-default.conf:/etc/apache2/sites-available/000-default.conf
       - ./usr/local/etc/php/php.ini:/usr/local/etc/php/php.ini
-      # - ./etc/apache2/apache2.conf:/etc/apache2/apache2.conf
-      # - ./etc/phpmyadmin/config-db.php:/etc/phpmyadmin/config-db.php
-      # - ./etc/phpmyadmin/config.inc.php:/etc/phpmyadmin/config.inc.php
       - /var/www/html:/var/www/html # htdocs mounting point
     ports:
       - 80:80
@@ -33,6 +30,21 @@ services:
     container_name: redis-3.0.7-alpine
     ports:
       - 6379:6379
+    networks:
+      - net-lampp-5.6
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:4.8
+    container_name: phpmyadmin-4.8
+    environment:
+     - PMA_ARBITRARY=1
+     - PMA_HOST=mariadb-docker
+     - PMA_PORTS=3306
+     - PMA_USER=root
+     - PMA_PASSWORD=my-secret-pw
+    restart: always
+    ports:
+     - 8080:80
     networks:
       - net-lampp-5.6
 
