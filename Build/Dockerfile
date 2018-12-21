@@ -1,21 +1,19 @@
-FROM ubuntu:14.04
+FROM php:5.6.39-apache-jessie
 LABEL maintainer="cikupin@gmail.com"
 
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update
-RUN apt-get install -y apt-utils
-RUN apt-get install -y dialog libterm-readline-perl-perl htop nano
-RUN apt-get install -y autoconf gcc g++ make openssl libssl-dev \
-    libcurl4-openssl-dev pkg-config libsasl2-dev libpcre3-dev snmp
-RUN apt-get install -y software-properties-common
-
+RUN apt-get install -y snmp wget
 RUN sed -i "s/^exit 101$/exit 0/" /usr/sbin/policy-rc.d
 
 # Install latest git
-RUN add-apt-repository ppa:git-core/ppa
-RUN apt-get update
 RUN apt-get install -y git
+
+# Install Datadog PHP APM tracer (beta 0.8.1)
+RUN wget -O datadog-php-tracer.deb https://github.com/DataDog/dd-trace-php/releases/download/0.8.1/datadog-php-tracer_0.8.1-beta_amd64.deb
+RUN dpkg -i datadog-php-tracer.deb
+RUN rm -f datadog-php-tracer.deb
 
 # Install librdkafka c library
 RUN mkdir -p /tmp/librdkafka
@@ -27,29 +25,80 @@ RUN make install
 WORKDIR /
 RUN rm -rf /tmp/librdkafka
 
-# Install apache2
-RUN apt-get -y install apache2
+RUN apt-get update && apt-get install -y \
+        libfreetype6-dev \
+        libjpeg62-turbo-dev \
+        libpng12-dev \
+        libtidy-dev \
+        libpq-dev \
+        libc-client-dev \
+        libkrb5-dev \
+        libmcrypt-dev \
+        libreadline-dev \
+        libpspell-dev \
+        librecode-dev \
+        libxml2-dev \
+        libsnmp-dev \
+        libicu-dev \
+        pslib1 pslib-dev \
+        libxslt-dev \
+        libmagickwand-dev --no-install-recommends
 
-# Install PHP
-RUN apt-get -y install php5 libapache2-mod-php5 php5-dev php5-mysqlnd php5-curl php5-gd \
-    php5-intl php-pear php5-imagick php5-imap php5-mcrypt php5-memcache php5-ming php5-apcu \
-    php5-ps php5-pspell php5-recode php5-snmp php5-sqlite php5-tidy php5-xmlrpc php5-xsl php5-pgsql
+# Install PHP extension
+RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/
+RUN docker-php-ext-install -j$(nproc) gd
+RUN docker-php-ext-install -j$(nproc) tidy
+RUN docker-php-ext-install -j$(nproc) mcrypt
+RUN docker-php-ext-install -j$(nproc) pspell
+RUN docker-php-ext-install -j$(nproc) recode
+RUN docker-php-ext-install -j$(nproc) snmp
+RUN docker-php-ext-install -j$(nproc) xmlrpc
+RUN docker-php-ext-install -j$(nproc) xsl
+RUN docker-php-ext-install -j$(nproc) bcmath
+RUN docker-php-ext-install -j$(nproc) bz2
+RUN docker-php-ext-install -j$(nproc) calendar
+RUN docker-php-ext-install -j$(nproc) dba
+RUN docker-php-ext-install -j$(nproc) exif
+RUN docker-php-ext-install -j$(nproc) gettext
+RUN docker-php-ext-install -j$(nproc) mysql
+RUN docker-php-ext-install -j$(nproc) mysqli
+RUN docker-php-ext-install -j$(nproc) pcntl
+RUN docker-php-ext-install -j$(nproc) pdo_mysql
+RUN docker-php-ext-install -j$(nproc) pdo_pgsql
+RUN docker-php-ext-install -j$(nproc) soap
+RUN docker-php-ext-install -j$(nproc) sockets
+RUN docker-php-ext-install -j$(nproc) sysvmsg
+RUN docker-php-ext-install -j$(nproc) sysvsem
+RUN docker-php-ext-install -j$(nproc) sysvshm
+RUN docker-php-ext-install -j$(nproc) wddx
+RUN docker-php-ext-install -j$(nproc) shmop
+
+RUN docker-php-ext-configure imap --with-kerberos --with-imap-ssl
+RUN docker-php-ext-install -j$(nproc) imap
+
+RUN docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql
+RUN docker-php-ext-install -j$(nproc) pgsql
+
 RUN pecl install mongo
-RUN pecl install mongodb
+RUN pecl install intl
+RUN pecl install imagick
 RUN pecl install rdkafka
+RUN pecl install mongodb
+RUN pecl install memcache
+RUN pecl install ps-1.3.7
+RUN pecl install apcu-4.0.11
 
-# Enable php modules
-RUN php5enmod mcrypt
+# Enable PECL extensions
+RUN docker-php-ext-enable mongo intl imagick rdkafka mongodb memcache ps apcu
+
+# Use the default production configuration
+RUN cp "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
+
+# Enable apache2 modules
 RUN a2enmod rewrite
 
-# Install PhpMyAdmin
-RUN apt-get -y install phpmyadmin
-
-# Clean .deb files
+# Clean files
 RUN apt-get autoclean
 RUN apt-get clean
 RUN apt-get autoremove
 RUN rm -rf /tmp/*
-
-EXPOSE 80
-WORKDIR "/var/www/html"

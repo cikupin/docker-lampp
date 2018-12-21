@@ -113,11 +113,7 @@ services:
   php-apache2:
     volumes:
       - ./etc/apache2/sites-available/000-default.conf:/etc/apache2/sites-available/000-default.conf
-      - ./etc/apache2/apache2.conf:/etc/apache2/apache2.conf
-      - ./etc/php5/apache2/php.ini:/etc/php5/apache2/php.ini
-      - ./etc/php5/cli/php.ini:/etc/php5/cli/php.ini
-      - ./etc/phpmyadmin/config-db.php:/etc/phpmyadmin/config-db.php
-      - ./etc/phpmyadmin/config.inc.php:/etc/phpmyadmin/config.inc.php
+      - ./usr/local/etc/php/php.ini:/usr/local/etc/php/php.ini
 ```
 
 You can edit those file according to your desired configurations, or you may add another files to be configured and mount them to your container.

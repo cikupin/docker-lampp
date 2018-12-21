@@ -5,13 +5,8 @@ services:
     container_name: php-apache2-5.6
     volumes:
       - ./etc/apache2/sites-available/000-default.conf:/etc/apache2/sites-available/000-default.conf
-      - ./etc/apache2/apache2.conf:/etc/apache2/apache2.conf
-      - ./etc/php5/apache2/php.ini:/etc/php5/apache2/php.ini
-      - ./etc/php5/cli/php.ini:/etc/php5/cli/php.ini
-      - ./etc/phpmyadmin/config-db.php:/etc/phpmyadmin/config-db.php
-      - ./etc/phpmyadmin/config.inc.php:/etc/phpmyadmin/config.inc.php
+      - ./usr/local/etc/php/php.ini:/usr/local/etc/php/php.ini
       - /var/www/html:/var/www/html # htdocs mounting point
-    command: /bin/bash -c "source /etc/apache2/envvars && apache2 -DFOREGROUND"
     ports:
       - 80:80
     networks:
@@ -35,6 +30,21 @@ services:
     container_name: redis-3.0.7-alpine
     ports:
       - 6379:6379
+    networks:
+      - net-lampp-5.6
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:4.8
+    container_name: phpmyadmin-4.8
+    environment:
+     - PMA_ARBITRARY=1
+     - PMA_HOST=mariadb-docker
+     - PMA_PORTS=3306
+     - PMA_USER=root
+     - PMA_PASSWORD=my-secret-pw
+    restart: always
+    ports:
+     - 8080:80
     networks:
       - net-lampp-5.6
 
