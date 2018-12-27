@@ -5,7 +5,7 @@ Dockerized LAMPP stack based on these components:
 
 * Apache2
 * PHP 5.6
-* PhpMyAdmin 4.4.13.1
+* PhpMyAdmin 4.8
 * MariaDB 10.3
 * Redis 3.0.7
 * MongoDb 3.4.4
