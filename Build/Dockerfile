@@ -72,6 +72,7 @@ RUN docker-php-ext-install -j$(nproc) sysvsem
 RUN docker-php-ext-install -j$(nproc) sysvshm
 RUN docker-php-ext-install -j$(nproc) wddx
 RUN docker-php-ext-install -j$(nproc) shmop
+RUN docker-php-ext-install -j$(nproc) zip
 
 RUN docker-php-ext-configure imap --with-kerberos --with-imap-ssl
 RUN docker-php-ext-install -j$(nproc) imap
@@ -97,8 +98,17 @@ RUN cp "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 # Enable apache2 modules
 RUN a2enmod rewrite
 
+# Install original composer
+RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+RUN php -r "if (hash_file('sha384', 'composer-setup.php') === '93b54496392c062774670ac18b134c3b3a95e5a5e5c8f1a9f115f203b75bf9a129d5daa8ba6a13e2cc8a1da0806388a8') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
+RUN php composer-setup.php
+RUN mv composer.phar /usr/local/bin/composer
+RUN php -r "unlink('composer-setup.php');"
+
 # Clean files
 RUN apt-get autoclean
 RUN apt-get clean
 RUN apt-get autoremove
 RUN rm -rf /tmp/*
+
+WORKDIR /var/www/html
