@@ -95,6 +95,9 @@ RUN docker-php-ext-enable mongo intl imagick rdkafka mongodb memcache ps apcu
 # Use the default production configuration
 RUN cp "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 
+# Enable Authorization header in apache
+RUN echo "SetEnvIf Authorization \"(.*)\" HTTP_AUTHORIZATION=\$1" >> /etc/apache2/apache2.conf
+
 # Enable apache2 modules
 RUN a2enmod rewrite
 
