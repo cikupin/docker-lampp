@@ -14,12 +14,18 @@ Dockerized LAMPP stack based on these components:
 
 Table of contents
 -----------------
+* [Changelog](#changelog)
 * [Requirements](#requirements)
 * [Building Docker Image](#building-docker-image)
 * [Using Docker Compose](#using-docker-compose)
 * [Mounting Volume](#mounting-volume)
 * [Custom LAMPP Configuration](#custom-lampp-configuration)
 * [Expose Port](#expose-port)
+
+Changelog
+---------
+
+Open this [CHANGELOG.md](https://github.com/cikupin/docker-lampp/blob/master/CHANGELOG.md) file to see version changelog.
 
 Requirements
 ------------
